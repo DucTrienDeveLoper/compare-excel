@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>So Sánh 2 File</title>
+</head>
+
+<body>
+    <div class="container">
+        <h2 class="">Hiển thị danh sách trong Excel </h2>
+        <form enctype="multipart/form-data">
+            <input id="upload" type=file name="files">
+            <input id="data" type=file name="da">
+        </form>
+        <textarea class="form-control" rows=35 cols=120 id="xlx_json"></textarea>
+    </div>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.8.0/jszip.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.8.0/xlsx.js"></script>
+    <script>
+        let dataExcelOne = []
+        let dataExcelTwo = []
+        let ExcelToJSONDataOne = function () {
+            this.parseExcel = function (file) {
+                var reader = new FileReader();
+
+                reader.onload = function (e) {
+                    let dataExcel = []
+                    var data = e.target.result;
+                    var workbook = XLSX.read(data, {
+                        type: 'binary'
+                    });
+                    for (let index = 0; index < workbook.SheetNames.length; index++) {
+                        var XL_row_object = XLSX.utils.sheet_to_row_object_array(workbook.Sheets[workbook.SheetNames[index]]);
+                        var json_object = JSON.stringify(XL_row_object);
+                        dataExcel.push(JSON.parse(json_object));
+
+                    }
+                    dataExcelOne = dataExcel
+                    ShowData()
+                };
+
+
+                reader.onerror = function (ex) {
+                    console.log(ex, "ex");
+                };
+
+                reader.readAsBinaryString(file);
+            };
+        };
+
+        let ExcelToJSONDataTwo = function () {
+            this.parseExcel = function (file) {
+                var reader = new FileReader();
+                reader.onload = function (e) {
+                    var data = e.target.result;
+                    let dataExcel = []
+                    var workbook = XLSX.read(data, {
+                        type: 'binary'
+                    });
+
+                    for (let index = 0; index < workbook.SheetNames.length; index++) {
+                        var XL_row_object = XLSX.utils.sheet_to_row_object_array(workbook.Sheets[workbook.SheetNames[index]]);
+                        var json_object = JSON.stringify(XL_row_object);
+                        dataExcel.push(JSON.parse(json_object));
+
+                    }
+                    dataExcelTwo = dataExcel
+                    ShowData()
+                };
+
+                reader.onerror = function (ex) {
+                    console.log(ex);
+                };
+
+                reader.readAsBinaryString(file);
+            };
+        };
+
+        document.getElementById('upload').addEventListener('change', function (evt) {
+            var files = evt.target.files;
+            var xl2json = new ExcelToJSONDataOne();
+            xl2json.parseExcel(files[0]);
+
+        });
+        document.getElementById('data').addEventListener('change', function (evt) {
+            var files = evt.target.files;
+            var xl2json = new ExcelToJSONDataTwo();
+            xl2json.parseExcel(files[0]);
+        });
+
+        function ShowData() {
+            let dataExcelOneSheet1 = dataExcelOne[0]
+            let dataExcelTwoSheet1 = dataExcelTwo[0]
+            
+          
+            if(dataExcelOneSheet1 && dataExcelTwoSheet1){
+            let KeydataExcelOne = Object.keys(dataExcelOneSheet1[0])
+            let KeydataExcelTwo = Object.keys(dataExcelTwoSheet1[0])
+            
+            let dataExcelOneSheet1Length = dataExcelOneSheet1.length;
+            let dataExcelTwoSheet1Length = dataExcelTwoSheet1.length;
+            // console.log(KeydataExcelOne,'1')
+            // console.log(KeydataExcelTwo,'2')
+            // console.log(dataExcelOneSheet1Length)
+            // console.log(dataExcelTwoSheet1Length)
+            if (KeydataExcelOne.join() === KeydataExcelTwo.join()) {
+                if (dataExcelOneSheet1Length === dataExcelTwoSheet1Length || dataExcelOneSheet1Length > dataExcelTwoSheet1Length) {
+                    for (let item = 0; item < dataExcelOneSheet1.length; item++) {
+                        let dataOne = dataExcelOneSheet1[item]
+                        let dataTwo = dataExcelTwoSheet1[item]
+                        
+                        
+                        for (let key in dataOne) { // dong so 0
+                            // stt , ho va ten , dia chi 
+                            if (dataOne[key] !== dataTwo[key]) {
+                                // console.log(dataExcelTwoSheet1[item], dataExcelOneSheet1[item])
+                                console.log(KeydataExcelOne[0],':',dataOne.STT)
+                                console.log(key,":",dataOne[key],'và',dataTwo[key])
+                                // break;
+                            }
+                        }
+                        
+                    }
+
+                } else {
+                    for (let item = 0; item < dataExcelTwoSheet1Length.length; item++) {
+                        let dataOne = dataExcelOneSheet1[item]
+                        let dataTwo = dataExcelTwoSheet1[item]
+                        for (let key in dataOne) { // dong so 0
+                            // stt , ho va ten , dia chi 
+                            if (dataOne[key] !== dataTwo[key]) {
+                                // console.log(dataExcelTwoSheet1[item], dataExcelOneSheet1[item])
+                                console.log(KeydataExcelOne[0],':',dataOne.STT)
+                                console.log(key,":",dataOne[key],'và',dataTwo[key])
+                                // break;
+                            }
+                        }
+                    }
+
+
+                }
+
+
+            } else {
+                return "2 Bảng không trùng  khớp"
+            }
+
+            }
+            
+           
+
+
+
+        }
+
+
+
+    </script>
+</body>
+
+</html>
