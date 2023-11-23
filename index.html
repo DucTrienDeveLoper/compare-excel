@@ -15,14 +15,29 @@
             <input id="upload" type=file name="files">
             <input id="data" type=file name="da">
         </form>
-        <textarea class="form-control" rows=35 cols=120 id="xlx_json"></textarea>
+
+        <!-- <textarea class="form-control" rows=35 cols=120 id="xlx_json"></textarea> -->
     </div>
+    <style>
+        .left{
+            background-color: red;
+        }
+        .right{
+            background-color: green;
+        }
+
+    </style>
+    <div id="table"></div>
+    <div id="tb">
+     
+    </div>
+    <script>console.table()</script>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.8.0/jszip.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.8.0/xlsx.js"></script>
     <script>
-        let dataExcelOne = []
-        let dataExcelTwo = []
+        var dataExcelOne = []
+        var dataExcelTwo = []
         let ExcelToJSONDataOne = function () {
             this.parseExcel = function (file) {
                 var reader = new FileReader();
@@ -95,63 +110,115 @@
         function ShowData() {
             let dataExcelOneSheet1 = dataExcelOne[0]
             let dataExcelTwoSheet1 = dataExcelTwo[0]
-            
-          
-            if(dataExcelOneSheet1 && dataExcelTwoSheet1){
-            let KeydataExcelOne = Object.keys(dataExcelOneSheet1[0])
-            let KeydataExcelTwo = Object.keys(dataExcelTwoSheet1[0])
-            
-            let dataExcelOneSheet1Length = dataExcelOneSheet1.length;
-            let dataExcelTwoSheet1Length = dataExcelTwoSheet1.length;
-            // console.log(KeydataExcelOne,'1')
-            // console.log(KeydataExcelTwo,'2')
-            // console.log(dataExcelOneSheet1Length)
-            // console.log(dataExcelTwoSheet1Length)
-            if (KeydataExcelOne.join() === KeydataExcelTwo.join()) {
-                if (dataExcelOneSheet1Length === dataExcelTwoSheet1Length || dataExcelOneSheet1Length > dataExcelTwoSheet1Length) {
-                    for (let item = 0; item < dataExcelOneSheet1.length; item++) {
-                        let dataOne = dataExcelOneSheet1[item]
-                        let dataTwo = dataExcelTwoSheet1[item]
-                        
-                        
-                        for (let key in dataOne) { // dong so 0
-                            // stt , ho va ten , dia chi 
-                            if (dataOne[key] !== dataTwo[key]) {
-                                // console.log(dataExcelTwoSheet1[item], dataExcelOneSheet1[item])
-                                console.log(KeydataExcelOne[0],':',dataOne.STT)
-                                console.log(key,":",dataOne[key],'và',dataTwo[key])
-                                // break;
+
+
+            console.log(dataExcelOneSheet1)
+            if (dataExcelOneSheet1 && dataExcelTwoSheet1) {
+                let KeydataExcelOne = Object.keys(dataExcelOneSheet1[0])
+                let KeydataExcelTwo = Object.keys(dataExcelTwoSheet1[0])
+                let key_main = KeydataExcelOne[0]// key (STT , họ và tên , địa chỉ)
+                let b = String(key_main)
+                
+
+                let dataExcelOneSheet1Length = dataExcelOneSheet1.length;
+                let dataExcelTwoSheet1Length = dataExcelTwoSheet1.length;
+                let dif = []
+                let html = "<table border= '1|1'> "
+                // for(let key in dataOne){}
+                if (KeydataExcelOne.join() === KeydataExcelTwo.join()) {
+                    if (dataExcelOneSheet1Length === dataExcelTwoSheet1Length || dataExcelOneSheet1Length > dataExcelTwoSheet1Length) {
+                        html += "<tr>";
+                        for(let i = 0 ; i < KeydataExcelOne.length; i++){
+                               
+                                html += "<th>"+ KeydataExcelOne[i]+"</th>";
+                                // dif.push(KeydataExcelOne[i])
+
+                            }
+                            html += "</tr>";    
+                        for (let item = 0; item < dataExcelOneSheet1.length; item++) {
+                            let dataOne = dataExcelOneSheet1[item]
+                            let dataTwo = dataExcelTwoSheet1[item]  
+                            
+                     
+                            for (let key in dataOne) { // dong so 0
+                                // stt , ho va ten , dia chi 
+                             
+                                html += "<tr>";
+
+                                if (dataOne[key] !== dataTwo[key]) {
+                                    dif.push(dataOne[key])
+                                    dif.push(dataTwo[key])
+                                    console.log(dataOne[key], dataTwo[key])
+                                    console.log(key)
+                                    
+                                    
+                                    html += "<td class ="+"tablejs"+" >" + dataOne.STT + "</td>";
+                                    if(dataOne['Họ và tên'] == dataTwo['Họ và tên']){
+                                        html += "<td>" + dataOne['Họ và tên'] + "</td>";
+                                    }else{
+                                    html += "<td role =" +"cell"+">" 
+                                        +"<span class ="+"left"+">"+ dataOne['Họ và tên']+"</span>"
+                                        + "<span class ="+"right"+">"+dataTwo['Họ và tên']+"</span>"+ "</td>";
+                                    }
+                                    if( dataOne['địa chỉ'] == dataTwo['địa chỉ']){
+                                        html += "<td>" + dataOne['địa chỉ'] + "</td>";
+                                    }else {
+                                        html += "<td role ="+"cell"+">" 
+                                            +"<span class ="+"left"+">"+ dataOne['địa chỉ'] +"</span>"
+                                            +"<span class ="+"right"+">"+ dataTwo['địa chỉ']+ "</span>"+"</td>";
+                                        dif.push(dataOne['địa chỉ']) 
+                                        dif.push(dataTwo['địa chỉ'])
+                                    }
+                                    document.getElementById("table").innerHTML = html
+                                    break;
+                                }
+                                // else {
+                                //     html += "<td>" + dataOne.STT + "</td>";
+                                //     html += "<td>" + dataOne[key] + "</td";
+                                //     html += "<td>" + dataOne['địa chỉ'] + ","+dataTwo['địa chỉ']+"</td>";    
+                                //     console.log(dataOne[key])    
+                                // }
+                                html += "</tr>";
+                                console.log(dif)
+                               
+                            }
+                            // for (let key in dataOne){
+                            //     console.log(dataOne)
+                            //     html += "<tr>";
+                            //     html += "<td>" + dataOne[key] + "</td>";
+                            //     html += "<tr>";    
+                            // }
+                            // document.getElementById("table").innerHTML = html
+
+                        }
+
+                    } else {
+                        for (let item = 0; item < dataExcelTwoSheet1Length.length; item++) {
+                            let dataOne = dataExcelOneSheet1[item]
+                            let dataTwo = dataExcelTwoSheet1[item]
+                            for (let key in dataOne) { // dong so 0
+                                let html = ''
+                                // stt , ho va ten , dia chi 
+                                if (dataOne[key] !== dataTwo[key]) {
+                                    // console.log(dataExcelTwoSheet1[item], dataExcelOneSheet1[item])
+                                    console.log(KeydataExcelOne[0], ':', dataOne.STT)
+                                    console.log(key, ":", dataOne[key], 'và', dataTwo[key])
+                                    // break; 
+                                }
                             }
                         }
-                        
+
+
                     }
+
+
 
                 } else {
-                    for (let item = 0; item < dataExcelTwoSheet1Length.length; item++) {
-                        let dataOne = dataExcelOneSheet1[item]
-                        let dataTwo = dataExcelTwoSheet1[item]
-                        for (let key in dataOne) { // dong so 0
-                            // stt , ho va ten , dia chi 
-                            if (dataOne[key] !== dataTwo[key]) {
-                                // console.log(dataExcelTwoSheet1[item], dataExcelOneSheet1[item])
-                                console.log(KeydataExcelOne[0],':',dataOne.STT)
-                                console.log(key,":",dataOne[key],'và',dataTwo[key])
-                                // break;
-                            }
-                        }
-                    }
-
-
+                    return "2 Bảng không trùng  khớp"
                 }
 
-
-            } else {
-                return "2 Bảng không trùng  khớp"
             }
 
-            }
-            
-           
 
 
 
