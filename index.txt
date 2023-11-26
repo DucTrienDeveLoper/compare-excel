@@ -1,0 +1,5 @@
+ Bước 1 : cài đặt (upload file)
+ Bước 2 : 
+       2.1 + Đọc sheet (của từng file) tiếp theo so sánh điểm tương đồng của 2 file về các sheet
+       2.2 + Với các sheet giống nhau , kiểm tra từng (table số lượng KEY,tỷ lệ KEY,tên KEY ) của sheet 
+       2.3 + Kiểm tra data các table 
